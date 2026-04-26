@@ -56,11 +56,13 @@ columns = pickle.load(open("model_columns.pkl","rb"))
 explainer = shap.TreeExplainer(model)
 
 conn = mysql.connector.connect(
-    host="localhost",
-    user="tricare",
-    password="02092002t",
-    database="churn_db"
+    host=st.secrets["DB_HOST"],
+    user=st.secrets["DB_USER"],
+    password=st.secrets["DB_PASS"],
+    database=st.secrets["DB_NAME"],
+    port=3306
 )
+
 cursor = conn.cursor()
 
 # -----------------------------
@@ -138,8 +140,9 @@ if predict:
         # SAVE TO DB (UNCHANGED)
         cursor.execute("""
         INSERT INTO predictions (tenure, monthly, total, contract, prediction, probability)
-        VALUES (%s,%s,%s,%s,%s,%s)
-        """,(tenure, monthly, total, contract, int(pred), float(prob)))
+        VALUES (%s, %s, %s, %s, %s, %s)
+        """, (tenure, monthly, total, contract, int(pred), float(prob)))
+
         conn.commit()
 
         # -----------------------------
