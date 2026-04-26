@@ -42,7 +42,7 @@ conn = mysql.connector.connect(
     user=st.secrets["DB_USER"],
     password=st.secrets["DB_PASS"],
     database=st.secrets["DB_NAME"],
-    port=3306
+    port=st.secrets["DB_PORT"]
 )
 cursor = conn.cursor()
 
