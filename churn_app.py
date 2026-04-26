@@ -91,7 +91,10 @@ set_bg()
 st.markdown("""
 <div class="navbar">
     <h1>📊 Customer Churn Intelligence System</h1>
-    <p>Predict • Explain • Retain Customers</p>
+    <p style="font-size:18px;">
+        Leverage machine learning to predict churn, analyze customer behavior,
+        and take proactive actions to improve retention.
+        </p>
 </div>
 """, unsafe_allow_html=True)
 
@@ -99,11 +102,6 @@ st.markdown("""
 st.markdown("""
 <div class="hero">
     <div class="hero-content">
-        <h1>Customer Churn Prediction System</h1>
-        <p style="font-size:18px;">
-        Leverage machine learning to predict churn, analyze customer behavior,
-        and take proactive actions to improve retention.
-        </p>
     </div>
 </div>
 """, unsafe_allow_html=True)
