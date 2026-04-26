@@ -1,26 +1,13 @@
 import streamlit as st
 import pickle
 import pandas as pd
-import numpy as np
-import shap
 import mysql.connector
 
 st.set_page_config(layout="wide")
 
-# -----------------------------
-# UI STYLE
-# -----------------------------
 st.markdown("""
 <style>
 .stApp {background-color:#f8fafc;}
-
-.card {
-    background:white;
-    padding:20px;
-    border-radius:12px;
-    box-shadow:0px 2px 8px rgba(0,0,0,0.1);
-    margin-bottom:15px;
-}
 
 .result-red {
     background:#fee2e2;
@@ -46,14 +33,9 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# -----------------------------
-# LOAD MODEL + DB
-# -----------------------------
-model = pickle.load(open("churn_model.pkl","rb"))
-scaler = pickle.load(open("churn_scaler.pkl","rb"))
-columns = pickle.load(open("model_columns.pkl","rb"))
-
-explainer = shap.TreeExplainer(model)
+model = pickle.load(open("churn_model.pkl", "rb"))
+scaler = pickle.load(open("churn_scaler.pkl", "rb"))
+columns = pickle.load(open("model_columns.pkl", "rb"))
 
 conn = mysql.connector.connect(
     host=st.secrets["DB_HOST"],
@@ -62,17 +44,9 @@ conn = mysql.connector.connect(
     database=st.secrets["DB_NAME"],
     port=3306
 )
-
 cursor = conn.cursor()
 
-# -----------------------------
-# TITLE
-# -----------------------------
 st.title("🤖 Customer Churn Prediction")
-
-# -----------------------------
-# FORM (ALL ORIGINAL INPUTS)
-# -----------------------------
 st.markdown("### 🧾 Customer Details")
 
 col1, col2 = st.columns(2)
@@ -82,42 +56,35 @@ with col1:
     monthly = st.number_input("Monthly Charges")
     total = st.number_input("Total Charges")
 
-    senior_option = st.selectbox("Senior Citizen", ["Select","No","Yes"])
-    partner = st.selectbox("Partner",["Select","No","Yes"])
-    dependents = st.selectbox("Dependents",["Select","No","Yes"])
+    senior_option = st.selectbox("Senior Citizen", ["Select", "No", "Yes"])
+    partner = st.selectbox("Partner", ["Select", "No", "Yes"])
+    dependents = st.selectbox("Dependents", ["Select", "No", "Yes"])
 
 with col2:
-    phone = st.selectbox("Phone Service",["Select","No","Yes"])
-    internet = st.selectbox("Internet Service", ["Select","DSL","Fiber optic","No"])
-    contract = st.selectbox("Contract Type", ["Select","Month-to-month","One year","Two year"])
-    paperless = st.selectbox("Paperless Billing",["Select","No","Yes"])
+    phone = st.selectbox("Phone Service", ["Select", "No", "Yes"])
+    internet = st.selectbox("Internet Service", ["Select", "DSL", "Fiber optic", "No"])
+    contract = st.selectbox("Contract Type", ["Select", "Month-to-month", "One year", "Two year"])
+    paperless = st.selectbox("Paperless Billing", ["Select", "No", "Yes"])
 
-predict = st.button("🚀 Predict Churn")
+if st.button("🚀 Predict Churn"):
 
-# -----------------------------
-# RESULT BELOW FORM
-# -----------------------------
-if predict:
-
-    # VALIDATION (same as before)
     if "Select" in [senior_option, partner, dependents, phone, internet, contract, paperless]:
         st.warning("⚠ Please fill all fields")
 
     else:
         senior = 1 if senior_option == "Yes" else 0
 
-        # SAME DATA PROCESSING
         sample = pd.DataFrame({
-            "SeniorCitizen":[senior],
-            "tenure":[tenure],
-            "MonthlyCharges":[monthly],
-            "TotalCharges":[total],
-            "Partner":[partner],
-            "Dependents":[dependents],
-            "PhoneService":[phone],
-            "InternetService":[internet],
-            "Contract":[contract],
-            "PaperlessBilling":[paperless]
+            "SeniorCitizen": [senior],
+            "tenure": [tenure],
+            "MonthlyCharges": [monthly],
+            "TotalCharges": [total],
+            "Partner": [partner],
+            "Dependents": [dependents],
+            "PhoneService": [phone],
+            "InternetService": [internet],
+            "Contract": [contract],
+            "PaperlessBilling": [paperless]
         })
 
         sample = pd.get_dummies(sample)
@@ -127,9 +94,6 @@ if predict:
         pred = model.predict(sample_scaled)[0]
         prob = model.predict_proba(sample_scaled)[0][1]
 
-        # -----------------------------
-        # RESULT
-        # -----------------------------
         st.markdown("### 📊 Prediction Result")
 
         if pred == 1:
@@ -137,92 +101,62 @@ if predict:
         else:
             st.markdown(f"<div class='result-green'>✅ Customer Will Stay ({(1-prob)*100:.2f}%)</div>", unsafe_allow_html=True)
 
-        # SAVE TO DB (UNCHANGED)
         cursor.execute("""
-        INSERT INTO predictions (tenure, monthly, total, contract, prediction, probability)
-        VALUES (%s, %s, %s, %s, %s, %s)
+            INSERT INTO predictions (tenure, monthly, total, contract, prediction, probability)
+            VALUES (%s, %s, %s, %s, %s, %s)
         """, (tenure, monthly, total, contract, int(pred), float(prob)))
 
         conn.commit()
 
-        # -----------------------------
-        # ONLY FOR CHURN
-        # -----------------------------
         if pred == 1:
-
-            # REASONS
             st.markdown("### 🔍 Why Customer May Churn")
 
-            if tenure < 12:
-                st.write("• Low tenure (new customer)")
-            if monthly > 80:
-                st.write("• High monthly charges")
-            if "month" in contract.lower():
-                st.write("• No long-term contract")
-            if "fiber" in internet.lower():
-                st.write("• Expensive internet service")
+            reasons = []
 
-            # -----------------------------
-            # SHAP (FIXED VERSION)
-            # -----------------------------
+            if tenure < 12:
+                reasons.append("Customer is new (low tenure)")
+            if monthly > 80:
+                reasons.append("High monthly charges")
+            if "month" in contract.lower():
+                reasons.append("No long-term contract")
+            if "fiber" in internet.lower():
+                reasons.append("Expensive internet service")
+
+            for r in reasons:
+                st.write("•", r)
+
             st.markdown("### 🔬 AI Insights")
 
-            shap_values = explainer.shap_values(sample_scaled)
+            insights = []
 
-            # Handle classification output
-            if isinstance(shap_values, list):
-                shap_values = shap_values[1]
+            if monthly > 80:
+                insights.append(("🔺", "High charges increase churn risk"))
+            else:
+                insights.append(("🔻", "Affordable charges reduce churn risk"))
 
-            # Convert to numpy
-            shap_values = np.array(shap_values)
+            if tenure < 12:
+                insights.append(("🔺", "Short tenure increases churn"))
+            else:
+                insights.append(("🔻", "Long-term customers are stable"))
 
-            # Ensure 1D
-            if shap_values.ndim > 1:
-                shap_values = shap_values[0]
+            if "month" in contract.lower():
+                insights.append(("🔺", "Month-to-month contract is risky"))
+            else:
+                insights.append(("🔻", "Long-term contract reduces churn"))
 
-            # Convert to 1D explicitly
-            shap_values = shap_values.flatten()
+            if "fiber" in internet.lower():
+                insights.append(("🔺", "Fiber users tend to churn more"))
 
-            # Match lengths safely
-            min_len = min(len(columns), len(shap_values))
+            for icon, msg in insights:
+                st.write(icon, msg)
 
-            shap_df = pd.DataFrame({
-                "Feature": columns[:min_len],
-                "Impact": shap_values[:min_len]
-            })
-
-            # Sort by importance
-            shap_df["AbsImpact"] = shap_df["Impact"].abs()
-            shap_df = shap_df.sort_values(by="AbsImpact", ascending=False)
-
-            for _, row in shap_df.head(5).iterrows():
-                f = row["Feature"]
-                impact = row["Impact"]
-
-                if "MonthlyCharges" in f:
-                    msg = "High charges increase churn risk"
-                elif "tenure" in f:
-                    msg = "Short tenure increases churn"
-                elif "Contract_Month-to-month" in f:
-                    msg = "Month-to-month contract increases churn"
-                elif "InternetService_Fiber optic" in f:
-                    msg = "Fiber users tend to churn more"
-                else:
-                    continue
-
-                if impact > 0:
-                    st.write("🔺", msg)
-                else:
-                    st.write("🔻", msg)
-
-            # ACTIONS
             st.markdown("### 💡 Suggested Actions")
 
             if monthly > 80:
-                st.info("Offer discount plan")
+                st.info("Offer discount or cheaper plan")
 
             if "month" in contract.lower():
                 st.info("Encourage long-term contract")
 
             if tenure < 12:
-                st.info("Improve onboarding support")
+                st.info("Provide onboarding support")
