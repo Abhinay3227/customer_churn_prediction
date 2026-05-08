@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Churn AI</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+<style>
+
+body{
+    margin:0;
+    padding:0;
+    font-family: 'Segoe UI', sans-serif;
+    background:#050816;
+    color:white;
+}
+
+/* HEADER */
+
+.top-header{
+    position:fixed;
+    top:0;
+    width:100%;
+    z-index:1000;
+
+    background:rgba(10,10,25,0.85);
+
+    backdrop-filter: blur(12px);
+
+    border-bottom:1px solid rgba(255,255,255,0.08);
+
+    padding:15px 30px;
+}
+
+/* LOGO */
+
+.logo-text{
+    font-size:32px;
+    font-weight:700;
+
+    background: linear-gradient(to right,#ffffff,#7c4dff);
+
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+
+/* NAVBAR */
+
+.nav-center a{
+
+    color:#d1d5db;
+    text-decoration:none;
+
+    margin:0 18px;
+
+    font-weight:500;
+
+    transition:0.3s;
+}
+
+.nav-center a:hover{
+
+    color:white;
+
+    text-shadow:0 0 10px #7c4dff;
+}
+
+/* MENU */
+
+.menu-btn{
+
+    background:rgba(255,255,255,0.08);
+
+    border:none;
+
+    color:white;
+
+    padding:10px 14px;
+
+    border-radius:10px;
+}
+
+.dropdown-menu{
+
+    background:#111827;
+
+    border:none;
+
+    border-radius:12px;
+}
+
+.dropdown-item{
+
+    color:white;
+}
+
+.dropdown-item:hover{
+
+    background:#7c4dff;
+    color:white;
+}
+
+/* MAIN */
+
+.main-content{
+
+    padding-top:110px;
+    min-height:100vh;
+}
+
+/* BUTTONS */
+
+.glow-btn{
+
+    background:linear-gradient(135deg,#7c4dff,#2563eb);
+
+    border:none;
+
+    color:white;
+
+    padding:14px 30px;
+
+    border-radius:14px;
+
+    font-weight:600;
+
+    transition:0.3s;
+
+    box-shadow:0 0 20px rgba(124,77,255,0.35);
+}
+
+.glow-btn:hover{
+
+    transform:translateY(-3px);
+
+    box-shadow:0 0 30px rgba(124,77,255,0.6);
+}
+
+/* CARD */
+
+.glass-card{
+
+    background:rgba(255,255,255,0.05);
+
+    border:1px solid rgba(255,255,255,0.08);
+
+    backdrop-filter:blur(14px);
+
+    border-radius:24px;
+
+    box-shadow:0 0 40px rgba(124,77,255,0.12);
+}
+
+/* SCROLLBAR */
+
+::-webkit-scrollbar{
+    width:8px;
+}
+
+::-webkit-scrollbar-thumb{
+    background:#7c4dff;
+    border-radius:20px;
+}
+
+.form-control,
+.form-select{
+
+    background:rgba(255,255,255,0.06);
+
+    border:1px solid rgba(255,255,255,0.08);
+
+    color:white;
+
+    padding:14px;
+
+    border-radius:14px;
+}
+
+.form-control:focus,
+/* DROPDOWN FIX */
+.form-select {
+    background-color: #111827 !important;
+    color: white !important;
+    border: 1px solid #374151 !important;
+}
+
+.form-select option {
+    background-color: #111827;
+    color: white;
+}
+
+/* INPUTS */
+.form-control {
+    background-color: #111827 !important;
+    color: white !important;
+    border: 1px solid #374151 !important;
+}
+
+.form-control::placeholder {
+    color: #9ca3af;
+}
+
+/* LABELS */
+.form-label {
+    color: white;
+}
+
+.card{
+
+    background:rgba(255,255,255,0.04);
+
+    border:none;
+
+    border-radius:24px;
+
+    color:white;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- HEADER -->
+
+<div class="top-header d-flex justify-content-between align-items-center">
+
+    <!-- LOGO -->
+    <div class="logo-text">
+    <a href="/home" style="text-decoration:none; color:inherit;">
+        Churn AI
+    </a>
+</div>  
+
+    <!-- NAVBAR -->
+    <div class="nav-center d-none d-md-block">
+
+        <a href="/predict">Predict</a>
+
+        <a href="/dashboard">Dashboard</a>
+
+        <a href="/database">Database</a>
+
+        <a href="/upload">Upload</a>
+
+    </div>
+
+    <!-- MENU -->
+    <div class="dropdown">
+
+        <button class="menu-btn" data-bs-toggle="dropdown">
+
+            <i class="bi bi-list fs-5"></i>
+
+        </button>
+
+        <ul class="dropdown-menu dropdown-menu-end">
+
+            <li>
+                <a class="dropdown-item" href="#">
+                    About
+                </a>
+            </li>
+
+            <li>
+                <a class="dropdown-item" href="/logout">
+                    Logout
+                </a>
+            </li>
+
+        </ul>
+
+    </div>
+
+</div>
+
+<!-- MAIN -->
+
+<div class="main-content">
+
+{% block content %}
+{% endblock %}
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

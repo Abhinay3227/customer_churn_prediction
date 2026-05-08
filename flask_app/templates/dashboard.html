@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- PAGE TITLE -->
+    <h2 class="mb-4 fw-bold">📊 Dashboard Analytics</h2>
+
+    <!-- TOP CARDS -->
+    <div class="row g-4">
+
+        <!-- TOTAL -->
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 p-4 text-center h-100">
+
+                <h6 class="text-muted mb-2">
+                    Total Predictions
+                </h6>
+
+                <h2 class="fw-bold text-primary">
+                    {{ total }}
+                </h2>
+
+            </div>
+        </div>
+
+        <!-- CHURN -->
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 p-4 text-center h-100">
+
+                <h6 class="text-muted mb-2">
+                    Churn Customers
+                </h6>
+
+                <h2 class="fw-bold text-danger">
+                    {{ churn }}
+                </h2>
+
+            </div>
+        </div>
+
+        <!-- STAY -->
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 p-4 text-center h-100">
+
+                <h6 class="text-muted mb-2">
+                    Retained Customers
+                </h6>
+
+                <h2 class="fw-bold text-success">
+                    {{ stay }}
+                </h2>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- CHARTS -->
+    <div class="row mt-4 g-4">
+
+        <!-- DOUGHNUT -->
+        <div class="col-lg-5">
+
+            <div class="card shadow-sm border-0 p-4">
+
+                <h5 class="mb-4 fw-semibold">
+                    📌 Churn Distribution
+                </h5>
+
+                <div style="height:350px;">
+                    <canvas id="chart"></canvas>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- TREND -->
+        <div class="col-lg-7">
+
+            <div class="card shadow-sm border-0 p-4">
+
+                <h5 class="mb-4 fw-semibold">
+                    📈 Churn Trend
+                </h5>
+
+                <div style="height:350px;">
+                    <canvas id="trendChart"></canvas>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- CHART JS -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- DOUGHNUT CHART -->
+<script>
+new Chart(document.getElementById("chart"), {
+
+    type: "doughnut",
+
+    data: {
+
+        labels: ["Churn", "Stay"],
+
+        datasets: [{
+            data: [{{ churn or 0 }}, {{ stay or 0 }}],
+
+            backgroundColor: [
+                "#ef4444",
+                "#22c55e"
+            ],
+
+            borderWidth: 2,
+            hoverOffset: 10
+        }]
+    },
+
+    options: {
+
+        responsive: true,
+        maintainAspectRatio: false,
+
+        plugins: {
+
+            legend: {
+                position: "top"
+            }
+        },
+
+        cutout: "60%"
+    }
+});
+</script>
+
+<!-- TREND GRAPH -->
+<script>
+new Chart(document.getElementById("trendChart"), {
+
+    type: "line",
+
+    data: {
+
+        labels: {{ trend_dates|safe }},
+
+        datasets: [{
+
+            label: "Daily Churn Count",
+
+            data: {{ trend_values|safe }},
+
+            borderColor: "#2563eb",
+
+            backgroundColor: "rgba(37,99,235,0.1)",
+
+            fill: true,
+
+            tension: 0.4,
+
+            pointRadius: 5,
+
+            pointBackgroundColor: "#2563eb"
+        }]
+    },
+
+    options: {
+
+        responsive: true,
+        maintainAspectRatio: false,
+
+        plugins: {
+
+            legend: {
+                display: true
+            }
+        },
+
+        scales: {
+
+            y: {
+
+                beginAtZero: true,
+
+                ticks: {
+                    precision: 0
+                }
+            }
+        }
+    }
+});
+</script>
+
+{% endblock %}

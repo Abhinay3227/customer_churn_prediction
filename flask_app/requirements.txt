@@ -1,7 +1,5 @@
-
-streamlit
+flask
 pandas
 numpy
 scikit-learn
-plotly
 mysql-connector-python

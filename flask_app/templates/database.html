@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- TITLE -->
+    <h2 class="fw-bold mb-4">
+        📂 Stored Predictions
+    </h2>
+
+    <!-- FILTERS -->
+    <div class="row mb-4">
+
+        <!-- SEARCH -->
+        <div class="col-md-6">
+
+            <input
+                type="text"
+                id="search"
+                class="form-control form-control-lg"
+                placeholder="🔍 Search records..."
+            >
+
+        </div>
+
+        <!-- FILTER -->
+        <div class="col-md-3">
+
+            <select id="filter" class="form-select form-select-lg">
+
+                <option value="">
+                    All Predictions
+                </option>
+
+                <option value="1">
+                    Churn Only
+                </option>
+
+                <option value="0">
+                    Stay Only
+                </option>
+
+            </select>
+
+        </div>
+
+    </div>
+
+    <!-- TABLE CARD -->
+    <div class="glass-card p-3">
+
+        <div class="table-responsive">
+
+            <table class="table table-dark table-hover align-middle text-center mb-0" id="predictionTable">
+
+                <thead>
+
+                    <tr>
+
+                        <th>ID</th>
+                        <th>Tenure</th>
+                        <th>Monthly</th>
+                        <th>Total</th>
+                        <th>Contract</th>
+                        <th>Prediction</th>
+                        <th>Probability</th>
+                        <th>Date</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for row in rows %}
+
+                    <tr>
+
+                        <td>{{ row.id }}</td>
+
+                        <td>{{ row.tenure }}</td>
+
+                        <td>{{ row.monthly }}</td>
+
+                        <td>{{ row.total }}</td>
+
+                        <td>{{ row.contract }}</td>
+
+                        <!-- PREDICTION -->
+                        <td class="prediction-cell">
+
+                            {% if row.prediction == 1 %}
+
+                                <span class="badge bg-danger">
+                                    Churn
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge bg-success">
+                                    Stay
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+
+                            {{ (row.probability * 100) | round(2) }}%
+
+                        </td>
+
+                        <td>
+
+                            {{ row.created_at }}
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- FILTER SCRIPT -->
+
+<script>
+
+const searchInput = document.getElementById("search");
+
+const filterSelect = document.getElementById("filter");
+
+const tableRows = document.querySelectorAll("#predictionTable tbody tr");
+
+function filterTable() {
+
+    const searchValue = searchInput.value.toLowerCase();
+
+    const filterValue = filterSelect.value;
+
+    tableRows.forEach(row => {
+
+        const rowText = row.innerText.toLowerCase();
+
+        const predictionText =
+            row.querySelector(".prediction-cell").innerText.trim();
+
+        let matchesSearch =
+            rowText.includes(searchValue);
+
+        let matchesFilter = true;
+
+        // FILTER LOGIC
+        if(filterValue === "1") {
+
+            matchesFilter =
+                predictionText === "Churn";
+
+        }
+
+        else if(filterValue === "0") {
+
+            matchesFilter =
+                predictionText === "Stay";
+        }
+
+        row.style.display =
+            (matchesSearch && matchesFilter)
+            ? ""
+            : "none";
+
+    });
+
+}
+
+searchInput.addEventListener("keyup", filterTable);
+
+filterSelect.addEventListener("change", filterTable);
+
+</script>
+
+{% endblock %}

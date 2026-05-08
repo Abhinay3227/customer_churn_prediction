@@ -1,0 +1,219 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+
+/* HERO SECTION */
+
+.hero-section{
+
+    position:relative;
+
+    overflow:hidden;
+
+    padding:80px 20px 100px;
+
+    text-align:center;
+}
+
+/* GLOW EFFECT */
+
+.hero-section::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:600px;
+    height:600px;
+
+    background:radial-gradient(circle,#7c4dff55 0%, transparent 70%);
+
+    top:-200px;
+    left:50%;
+
+    transform:translateX(-50%);
+
+    z-index:0;
+}
+
+/* CONTENT */
+
+.hero-content{
+
+    position:relative;
+
+    z-index:2;
+}
+
+.hero-badge{
+
+    display:inline-block;
+
+    background:rgba(255,255,255,0.08);
+
+    border:1px solid rgba(255,255,255,0.1);
+
+    padding:10px 18px;
+
+    border-radius:50px;
+
+    color:#cbd5e1;
+
+    margin-bottom:30px;
+}
+
+/* TITLE */
+
+.hero-title{
+
+    font-size:72px;
+
+    font-weight:800;
+
+    line-height:1.1;
+
+    margin-bottom:20px;
+
+    background:linear-gradient(to right,#ffffff,#a78bfa);
+
+    -webkit-background-clip:text;
+
+    -webkit-text-fill-color:transparent;
+}
+
+/* SUBTITLE */
+
+.hero-subtitle{
+
+    max-width:850px;
+
+    margin:auto;
+
+    color:#cbd5e1;
+
+    font-size:22px;
+
+    line-height:1.7;
+
+    margin-bottom:40px;
+}
+
+/* BUTTONS */
+
+.hero-buttons{
+
+    margin-bottom:70px;
+}
+
+.hero-buttons a{
+
+    margin:10px;
+}
+
+/* DASHBOARD IMAGE */
+
+.dashboard-preview{
+
+    position:relative;
+
+    max-width:1200px;
+
+    margin:auto;
+
+    border-radius:28px;
+
+    overflow:hidden;
+
+    box-shadow:
+        0 0 40px rgba(124,77,255,0.4),
+        0 0 120px rgba(37,99,235,0.25);
+
+    border:1px solid rgba(255,255,255,0.08);
+}
+
+.dashboard-preview img{
+
+    width:100%;
+
+    display:block;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:768px){
+
+    .hero-title{
+        font-size:42px;
+    }
+
+    .hero-subtitle{
+        font-size:18px;
+    }
+}
+
+</style>
+
+<div class="hero-section">
+
+    <div class="hero-content">
+
+        <!-- BADGE -->
+
+        <div class="hero-badge">
+
+            AI Powered Customer Retention Analytics
+
+        </div>
+
+        <!-- TITLE -->
+
+        <h1 class="hero-title">
+
+            Modern Analytics<br>
+            for Customer Churn Prediction
+
+        </h1>
+
+        <!-- SUBTITLE -->
+
+        <p class="hero-subtitle">
+
+            Predict customer churn, analyze behavior patterns,
+            visualize trends, and improve retention strategies
+            using Machine Learning and AI-powered analytics.
+
+        </p>
+
+        <!-- BUTTONS -->
+
+        <div class="hero-buttons">
+
+            <a href="/dashboard" class="glow-btn text-decoration-none">
+
+                Open Dashboard
+
+            </a>
+
+            <a href="/predict" class="glow-btn text-decoration-none">
+
+                Try Prediction
+
+            </a>
+
+        </div>
+
+        <!-- IMAGE -->
+
+        <div class="dashboard-preview">
+
+            <img src="{{ url_for('static', filename='bg.png') }}">
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

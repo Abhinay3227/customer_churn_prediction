@@ -1,0 +1,485 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- TITLE -->
+    <h2 class="mb-4 fw-bold">
+        🤖 Customer Churn Prediction
+    </h2>
+
+    <!-- FORM CARD -->
+    <div class="card p-4 shadow-lg border-0">
+
+        <form method="POST">
+
+            <div class="row">
+
+                <!-- LEFT -->
+                <div class="col-md-6">
+
+                    <!-- TENURE -->
+                    <div class="mb-3">
+
+                        <label class="form-label fw-semibold">
+                            Tenure (Months)
+                        </label>
+
+                        <input type="number"
+                               name="tenure"
+                               class="form-control"
+                               value="{{ tenure }}"
+                               required>
+
+                    </div>
+
+                    <!-- MONTHLY -->
+                    <div class="mb-3">
+
+                        <label class="form-label fw-semibold">
+                            Monthly Charges
+                        </label>
+
+                        <input type="number"
+                               step="0.01"
+                               name="monthly"
+                               class="form-control"
+                               value="{{ monthly }}"
+                               required>
+
+                    </div>
+
+                    <!-- TOTAL -->
+                    <div class="mb-3">
+
+                        <label class="form-label fw-semibold">
+                            Total Charges
+                        </label>
+
+                        <input type="number"
+                               step="0.01"
+                               name="total"
+                               class="form-control"
+                               value="{{ total }}"
+                               required>
+
+                    </div>
+
+                    <!-- SENIOR -->
+                    <div class="mb-3">
+
+                        <label class="form-label fw-semibold">
+                            Senior Citizen
+                        </label>
+
+                        <select name="senior" class="form-select">
+
+                            <option value="No"
+                            {% if senior == "No" %}selected{% endif %}>
+                                No
+                            </option>
+
+                            <option value="Yes"
+                            {% if senior == "Yes" %}selected{% endif %}>
+                                Yes
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <!-- PARTNER -->
+                    <div class="mb-3">
+
+                        <label class="form-label fw-semibold">
+                            Partner
+                        </label>
+
+                        <select name="partner" class="form-select">
+
+                            <option value="No"
+                            {% if partner == "No" %}selected{% endif %}>
+                                No
+                            </option>
+
+                            <option value="Yes"
+                            {% if partner == "Yes" %}selected{% endif %}>
+                                Yes
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <!-- DEPENDENTS -->
+                    <div class="mb-3">
+
+                        <label class="form-label fw-semibold">
+                            Dependents
+                        </label>
+
+                        <select name="dependents" class="form-select">
+
+                            <option value="No"
+                            {% if dependents == "No" %}selected{% endif %}>
+                                No
+                            </option>
+
+                            <option value="Yes"
+                            {% if dependents == "Yes" %}selected{% endif %}>
+                                Yes
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+                <!-- RIGHT -->
+                <div class="col-md-6">
+
+                    <!-- PHONE -->
+                    <div class="mb-3">
+
+                        <label class="form-label fw-semibold">
+                            Phone Service
+                        </label>
+
+                        <select name="phone" class="form-select">
+
+                            <option value="No"
+                            {% if phone == "No" %}selected{% endif %}>
+                                No
+                            </option>
+
+                            <option value="Yes"
+                            {% if phone == "Yes" %}selected{% endif %}>
+                                Yes
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <!-- INTERNET -->
+                    <div class="mb-3">
+
+                        <label class="form-label fw-semibold">
+                            Internet Service
+                        </label>
+
+                        <select name="internet" class="form-select">
+
+                            <option value="DSL"
+                            {% if internet == "DSL" %}selected{% endif %}>
+                                DSL
+                            </option>
+
+                            <option value="Fiber optic"
+                            {% if internet == "Fiber optic" %}selected{% endif %}>
+                                Fiber optic
+                            </option>
+
+                            <option value="No"
+                            {% if internet == "No" %}selected{% endif %}>
+                                No
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <!-- CONTRACT -->
+                    <div class="mb-3">
+
+                        <label class="form-label fw-semibold">
+                            Contract Type
+                        </label>
+
+                        <select name="contract" class="form-select">
+
+                            <option value="Month-to-month"
+                            {% if contract == "Month-to-month" %}selected{% endif %}>
+                                Month-to-month
+                            </option>
+
+                            <option value="One year"
+                            {% if contract == "One year" %}selected{% endif %}>
+                                One year
+                            </option>
+
+                            <option value="Two year"
+                            {% if contract == "Two year" %}selected{% endif %}>
+                                Two year
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <!-- PAPERLESS -->
+                    <div class="mb-3">
+
+                        <label class="form-label fw-semibold">
+                            Paperless Billing
+                        </label>
+
+                        <select name="paperless" class="form-select">
+
+                            <option value="No"
+                            {% if paperless == "No" %}selected{% endif %}>
+                                No
+                            </option>
+
+                            <option value="Yes"
+                            {% if paperless == "Yes" %}selected{% endif %}>
+                                Yes
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- BUTTON -->
+            <button class="btn btn-primary w-100 py-3 fw-bold mt-3">
+
+                🚀 Predict Churn
+
+            </button>
+
+        </form>
+
+    </div>
+
+    <!-- RESULT SECTION -->
+    {% if result %}
+
+    <div class="glass-card p-5 mt-5">
+
+        <!-- HEADER -->
+        <div class="d-flex justify-content-between align-items-center flex-wrap mb-4">
+
+            <div>
+
+                <h2 class="fw-bold mb-2">
+
+                    {% if prob > 0.5 %}
+                        ❌ Customer Likely to Churn
+                    {% else %}
+                        ✅ Customer Will Stay
+                    {% endif %}
+
+                </h2>
+
+                <p class="text-light-emphasis mb-0">
+
+                    AI Prediction Confidence Analysis
+
+                </p>
+
+            </div>
+
+            <!-- BADGE -->
+            <div>
+
+                <span class="badge rounded-pill
+                {% if prob > 0.5 %}
+                    bg-danger
+                {% else %}
+                    bg-success
+                {% endif %}
+                px-4 py-3 fs-6">
+
+                {% if prob > 0.5 %}
+                    {{ (prob * 100)|round(2) }}% Risk
+                {% else %}
+                    {{ ((1 - prob) * 100)|round(2) }}% Safe
+                {% endif %}
+
+                </span>
+
+            </div>
+
+        </div>
+
+        <!-- PROGRESS -->
+        <div class="mb-4">
+
+            <div class="d-flex justify-content-between mb-2">
+
+                <span class="fw-semibold">
+                    Prediction Confidence
+                </span>
+
+                <span>
+
+                    {% if prob > 0.5 %}
+                        {{ (prob * 100)|round(2) }}%
+                    {% else %}
+                        {{ ((1 - prob) * 100)|round(2) }}%
+                    {% endif %}
+
+                </span>
+
+            </div>
+
+            <div class="progress"
+                 style="height:32px;
+                        border-radius:20px;
+                        background:rgba(255,255,255,0.08);">
+
+                <div class="progress-bar
+                {% if prob > 0.5 %}
+                    bg-danger
+                {% else %}
+                    bg-success
+                {% endif %}"
+
+                role="progressbar"
+
+                style="
+                width:
+                {% if prob > 0.5 %}
+                    {{ prob * 100 }}%
+                {% else %}
+                    {{ (1 - prob) * 100 }}%
+                {% endif %};
+
+                font-weight:bold;
+                border-radius:20px;">
+
+                {% if prob > 0.5 %}
+                    {{ (prob * 100)|round(2) }}%
+                {% else %}
+                    {{ ((1 - prob) * 100)|round(2) }}%
+                {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- REASONS -->
+        {% if reasons %}
+
+        <div class="mt-5">
+
+            <h4 class="fw-bold mb-4">
+
+                🔍 Why Customer May Churn
+
+            </h4>
+
+            <div class="row">
+
+                {% for r in reasons %}
+
+                <div class="col-md-6 mb-3">
+
+                    <div class="glass-card p-3 h-100">
+
+                        <div class="d-flex align-items-start">
+
+                            <div class="me-3 fs-3">
+                                ⚠️
+                            </div>
+
+                            <div>
+
+                                <h6 class="fw-bold mb-1">
+
+                                    Risk Factor
+
+                                </h6>
+
+                                <p class="mb-0 text-light-emphasis">
+
+                                    {{ r }}
+
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+        <!-- SUGGESTIONS -->
+        {% if suggestions %}
+
+        <div class="mt-5">
+
+            <h4 class="fw-bold mb-4">
+
+                💡 Suggested Actions
+
+            </h4>
+
+            <div class="row">
+
+                {% for s in suggestions %}
+
+                <div class="col-md-6 mb-3">
+
+                    <div class="glass-card p-3 h-100">
+
+                        <div class="d-flex align-items-start">
+
+                            <div class="me-3 fs-3">
+                                🚀
+                            </div>
+
+                            <div>
+
+                                <h6 class="fw-bold mb-1">
+
+                                    Recommendation
+
+                                </h6>
+
+                                <p class="mb-0 text-light-emphasis">
+
+                                    {{ s }}
+
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}
