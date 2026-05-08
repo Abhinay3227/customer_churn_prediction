@@ -263,12 +263,15 @@ body{
         <ul class="dropdown-menu dropdown-menu-end">
 
             <li>
-                <a class="dropdown-item" href="#">
-                    About
-                </a>
-            </li>
+                <button 
+                    class="dropdown-item"
+                    data-bs-toggle="modal"
+                    data-bs-target="#aboutModal">
 
-            <li>
+                    About
+
+                </button>
+            </li>
                 <a class="dropdown-item" href="/logout">
                     Logout
                 </a>
@@ -290,6 +293,89 @@ body{
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- ABOUT MODAL -->
+
+<div class="modal fade" id="aboutModal" tabindex="-1">
+
+<div class="modal-dialog modal-dialog-centered modal-lg">
+
+<div class="modal-content"
+style="
+background:#111827;
+color:white;
+border-radius:20px;
+border:none;
+">
+
+<div class="modal-header border-0">
+
+<h3 class="modal-title fw-bold">
+🚀 About Churn AI
+</h3>
+
+<button type="button"
+class="btn-close btn-close-white"
+data-bs-dismiss="modal">
+</button>
+
+</div>
+
+<div class="modal-body">
+
+<p class="text-light">
+
+Churn AI is a machine learning based customer churn prediction system
+designed to analyze customer behavior and predict whether a customer
+is likely to leave a service.
+
+</p>
+
+<hr>
+
+<h5 class="fw-bold">✨ Features</h5>
+
+<ul>
+<li>Customer Churn Prediction using ML</li>
+<li>Interactive Dashboard Analytics</li>
+<li>Bulk CSV Upload Predictions</li>
+<li>Prediction History Database</li>
+<li>Real-time Probability Analysis</li>
+<li>Modern Dark UI Interface</li>
+</ul>
+
+<hr>
+
+<h5 class="fw-bold">🛠 Technologies Used</h5>
+
+<ul>
+<li>Python</li>
+<li>Flask</li>
+<li>Streamlit</li>
+<li>Machine Learning (Scikit-learn)</li>
+<li>Bootstrap 5</li>
+<li>Chart.js</li>
+<li>MySQL</li>
+</ul>
+
+<hr>
+
+<h5 class="fw-bold">🎯 Project Goal</h5>
+
+<p>
+
+Help businesses identify high-risk customers early and take proactive
+actions to improve customer retention and reduce churn.
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
 
 </body>
 </html>
