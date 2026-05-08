@@ -4,17 +4,10 @@ import pandas as pd
 import mysql.connector
 import os
 
-
-print("RUNNING FROM:", os.getcwd())
-
 app = Flask(
     __name__,
     template_folder=os.path.join(os.path.dirname(__file__), "templates")
 )
-
-print("APP FILE:", __file__)
-print("TEMPLATE FOLDER:", app.template_folder)
-print("FILES IN TEMPLATE:", os.listdir(app.template_folder))
 
 app.secret_key = "secret123"
 
@@ -268,32 +261,103 @@ def database():
 
 @app.route("/upload", methods=["GET", "POST"])
 def upload():
+
     if "user" not in session:
         return redirect("/")
 
     if request.method == "POST":
+
         file = request.files["file"]
 
         if file:
+
+            # READ CSV
             df = pd.read_csv(file)
 
             conn = get_db()
             cursor = conn.cursor()
 
+            # LOOP THROUGH CSV ROWS
             for _, row in df.iterrows():
+
+                # GET VALUES
+                tenure = int(row["tenure"])
+
+                monthly = float(row["MonthlyCharges"])
+
+                total = float(row["TotalCharges"])
+
+                contract = row["Contract"]
+
+                senior = int(row["SeniorCitizen"])
+
+                partner = row["Partner"]
+
+                dependents = row["Dependents"]
+
+                phone = row["PhoneService"]
+
+                internet = row["InternetService"]
+
+                paperless = row["PaperlessBilling"]
+
+                # CREATE SAMPLE
+                sample = pd.DataFrame({
+
+                    "SeniorCitizen": [senior],
+
+                    "tenure": [tenure],
+
+                    "MonthlyCharges": [monthly],
+
+                    "TotalCharges": [total],
+
+                    "Partner": [partner],
+
+                    "Dependents": [dependents],
+
+                    "PhoneService": [phone],
+
+                    "InternetService": [internet],
+
+                    "Contract": [contract],
+
+                    "PaperlessBilling": [paperless]
+
+                })
+
+                # SAME PREPROCESSING
+                sample = pd.get_dummies(sample)
+
+                sample = sample.reindex(columns=columns, fill_value=0)
+
+                sample_scaled = scaler.transform(sample)
+
+                # PREDICT
+                pred = model.predict(sample_scaled)[0]
+
+                prob = model.predict_proba(sample_scaled)[0][1]
+
+                # SAVE TO DB
                 cursor.execute("""
-                    INSERT INTO predictions (tenure, monthly, total, contract, prediction, probability)
+                    INSERT INTO predictions
+                    (tenure, monthly, total, contract, prediction, probability)
                     VALUES (%s,%s,%s,%s,%s,%s)
                 """, (
-                    row["tenure"],
-                    row["MonthlyCharges"],
-                    row["TotalCharges"],
-                    row["Contract"],
-                    int(row["prediction"]),
-                    float(row["probability"])
+                    tenure,
+                    monthly,
+                    total,
+                    contract,
+                    int(pred),
+                    float(prob)
                 ))
 
             conn.commit()
+
+            cursor.close()
+            conn.close()
+
+            return redirect("/dashboard")
 
     return render_template("upload.html")
 
